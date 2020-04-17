@@ -16,7 +16,7 @@ Annotations can be downloaded as JSON file and used in machine learning tools to
 
 **Quick Start**
 
-If you just want to run the Annotator, the easiest way is Docker:
+If you just want to run the Annotator, the easiest way is [Docker](https://docs.docker.com/get-docker/):
 
 1. Simply download the file: https://github.com/ilfrich/annotator/blob/master/docker-compose.yml
 2. And run `docker-compose up` - _this will download all required docker images and start up the system_
