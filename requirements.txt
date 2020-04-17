@@ -1,0 +1,7 @@
+pytz
+flask
+setuptools
+python-dotenv
+pbu==0.6.4
+Pillow
+pymongo

@@ -1,0 +1,25 @@
+# folders
+node_modules/
+_logs/
+controller/
+api/
+storage/
+templates/
+util/
+static/
+travis/
+.npm/
+
+# extensions
+*.json
+*.html
+*.md
+*.log
+*.yml
+*.py
+*.sh
+*.sql
+
+# files
+Dockerfile
+Makefile

@@ -1,0 +1,14 @@
+version: '3.6'
+services:
+  mongodb_container:
+    image: mongo:latest
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: annotator
+      MONGO_INITDB_ROOT_PASSWORD: annotator
+    ports:
+      - 127.0.0.1:27018:27017
+    volumes:
+      - mongodb_data_container:/data/db
+
+volumes:
+  mongodb_data_container:

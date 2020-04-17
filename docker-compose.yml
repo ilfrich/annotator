@@ -1,0 +1,27 @@
+version: '3.6'
+services:
+  mongodb_container:
+    image: mongo:latest
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: annotator
+      MONGO_INITDB_ROOT_PASSWORD: annotator
+    ports:
+      - 127.0.0.1:27018:27017
+    volumes:
+      - mongodb_data_container:/data/db
+  annotator:
+    image: ilfrich/annotator:latest
+    links:
+      - mongodb_container
+    environment:
+      MONGO_URL: mongodb://annotator:annotator@mongodb_container:27017
+    volumes:
+      - image_folder:/app/_images
+    ports:
+    - 5555:5555
+    depends_on:
+      - mongodb_container
+
+volumes:
+  mongodb_data_container:
+  image_folder:

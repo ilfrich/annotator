@@ -1,0 +1,69 @@
+{
+  "root": true,
+  "parser": "babel-eslint",
+  "env": {
+    "browser": true,
+    "node": true
+  },
+  "extends": [
+    "airbnb",
+    "prettier",
+    "prettier/react"
+  ],
+  "plugins": [
+    "react",
+    "import",
+    "prettier"
+  ],
+  "rules": {
+    "no-console": "off",
+    "no-sequences": "off",
+    "no-param-reassign": [ "error", { "props": false } ],
+    "no-underscore-dangle": [ "warn", { "allow": [ "_id", "_rev", "_path" ] } ],
+    "no-unused-vars": [ "warn", { "vars": "local", "args": "none" } ],
+    "no-unused-expressions": [ "error", { "allowTernary": true } ],
+    "no-plusplus": [ "error", { "allowForLoopAfterthoughts": true } ],
+    "no-duplicate-imports": 0,
+    "no-restricted-globals": "off",
+    "handle-callback-err": "error",
+    "valid-jsdoc": [
+      "error",
+      {
+        "prefer": {
+          "arg": "param",
+          "return": " returns"
+        },
+        "requireReturnType": false,
+        "requireReturn": false
+      }
+    ],
+    "react/jsx-filename-extension": [ 1, { "extensions": [ ".js", ".jsx" ] } ],
+    "react/prop-types": "off",
+    "react/jsx-indent": "off",
+    "react/jsx-indent-props": "off",
+    "react/prefer-stateless-function": "off",
+    "react/destructuring-assignment": "off",
+    "import/no-extraneous-dependencies": "off",
+    "import/no-unresolved": "off",
+    "import/extensions": "off",
+    "jsx-a11y/no-static-element-interactions": "off",
+    "jsx-a11y/no-noninteractive-element-interactions": "off",
+    "jsx-a11y/label-has-associated-control": "off",
+    "jsx-a11y/label-has-for": "off",
+    "jsx-a11y/click-events-have-key-events": "off",
+    "jsx-a11y/alt-text": "off",
+    "jsx-a11y/mouse-events-have-key-events": "off",
+    "class-methods-use-this": "off",
+
+    "prettier/prettier": [
+      "error", {
+        "tabWidth": 4,
+        "semi": false,
+        "singleQuote": false,
+        "trailingComma": "es5",
+        "printWidth": 120,
+        "comma-dangle": "always"
+      }
+    ]
+  }
+}
