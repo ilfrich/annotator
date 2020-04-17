@@ -14,6 +14,15 @@ Annotations can be downloaded as JSON file and used in machine learning tools to
 6. [Environment Config](#environment-config)
 5. [Tech Stack](#tech-stack)
 
+**Quick Start**
+
+If you just want to run the Annotator, the easiest way is Docker:
+
+1. Simply download the file: https://github.com/ilfrich/annotator/blob/master/docker-compose.yml
+2. And run `docker-compose up` - _this will download all required docker images and start up the system_
+
+_Note: images and the database with annotations are retained when you shut down the system_
+
 **Project Overview**
 
 ![Project Overview](documentation/project_view.png)
