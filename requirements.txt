@@ -2,6 +2,6 @@ pytz
 flask
 setuptools
 python-dotenv
-pbu==0.6.4
+pbu>=0.6.6
 Pillow
 pymongo

@@ -27,10 +27,6 @@ COPY webpack.config.js .
 # install dependencies
 RUN pip install -r requirements.txt
 
-# mongo / abc fix (https://github.com/py-bson/bson/issues/82#issuecomment-428398316)
-RUN pip uninstall -y bson pymongo
-RUN pip install pymongo
-
 # install NPM deps and build the frontend
 RUN npm i && npm run build
 
