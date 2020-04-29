@@ -32,3 +32,9 @@ frontend:
 
 build:
 	npm run build
+
+docker-build:
+	docker build -t ilfrich/annotator .
+
+docker-push: docker-build
+	docker push ilfrich/annotator
