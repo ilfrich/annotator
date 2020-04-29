@@ -1,7 +1,8 @@
 # The Annotator
 
-General purpose tool to create image annotations for machine learning purposes. The system supports single images and 
- frame sets (provided as zip file).
+General purpose tool to create image annotations for machine learning purposes. 
+
+> **The system supports single images and frame sets (multiple images _of the same size_ provided as zip file).**
  
 Annotations can be downloaded as JSON file and used in machine learning tools to train image analytic models. 
 
