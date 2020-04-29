@@ -62,6 +62,11 @@ const style = {
         display: "inline-block",
         padding: "4px 5px",
     },
+    toggleAnnotation: {
+        position: "absolute",
+        bottom: "5px",
+        right: "90px",
+    },
     zoomLevel: {
         background: "#33aa66",
         fontWeight: "600",
@@ -166,6 +171,7 @@ class ImageAnnotation extends React.Component {
             changed: false,
             currentFrame: 0,
             showSettings: false,
+            showAnnotations: true,
             settings: {
                 ANTR_SAVE_FRAME_NEXT: false,
                 ANTR_OUTLINE_ONLY: false,
@@ -193,6 +199,7 @@ class ImageAnnotation extends React.Component {
         this.switchFrame = this.switchFrame.bind(this)
         this.toggleSettings = this.toggleSettings.bind(this)
         this.changeSetting = this.changeSetting.bind(this)
+        this.toggleAnnotations = this.toggleAnnotations.bind(this)
     }
 
     componentDidMount() {
@@ -296,6 +303,13 @@ class ImageAnnotation extends React.Component {
         }))
     }
 
+    toggleAnnotations() {
+        this.setState(oldState => ({
+            showAnnotations: !oldState.showAnnotations,
+        }))
+        this.delayedRedraw()
+    }
+
     changeSetting(updatedSettings) {
         // save in browser's local storage
         Object.keys(updatedSettings).forEach(key => {
@@ -391,11 +405,14 @@ class ImageAnnotation extends React.Component {
     redraw(currentPosition = null) {
         // clean canvas
         this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height)
+        this.ctx.lineWidth = 3
+
+        if (this.state.showAnnotations === false) {
+            return
+        }
 
         // draw any pre-existing or already added polygons as filled polygons
-
         const defaultColor = `rgba(255, 0, 0, ${this.state.settings.ANTR_TRANSPARENCY})`
-
         this.state.polygons.forEach(polygon => {
             if (
                 polygon.annotationType != null &&
@@ -532,6 +549,7 @@ class ImageAnnotation extends React.Component {
                 ...oldState,
                 polygons,
                 changed: true,
+                showAnnotations: true,
             }
         })
         this.delayedRedraw()
@@ -694,6 +712,16 @@ class ImageAnnotation extends React.Component {
                         </div>
                     </div>
                     <div style={mixins.relative}>
+                        <div title="Toggle Annotations" style={style.toggleAnnotation}>
+                            <label className="switch">
+                                <input
+                                    type="checkbox"
+                                    onChange={this.toggleAnnotations}
+                                    checked={this.state.showAnnotations === true}
+                                />
+                                <span className="slider round" />
+                            </label>
+                        </div>
                         <div style={style.settingsIcon} onClick={this.toggleSettings}>
                             <FontAwesomeIcon icon="cog" />
                         </div>
