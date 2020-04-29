@@ -37,6 +37,12 @@ class DownloadForm extends React.Component {
 
     downloadAnnotations() {
         let blobContent
+
+        const addImageSize = annotationList => annotationList.map(annotation => {
+            annotation.imageSize = [this.props.image.width, this.props.image.height]
+            return annotation
+        })
+
         if (this.props.image.numFrames != null) {
             // frame set
             const imageMap = {}
@@ -50,11 +56,11 @@ class DownloadForm extends React.Component {
             const result = {}
             Object.values(this.props.imageAnnotations).forEach(annotation => {
                 const key = `${annotation.frameNum}`
-                result[imageMap[key] || key] = annotation.shapes
+                result[imageMap[key] || key] = addImageSize(annotation.shapes)
             })
             blobContent = [JSON.stringify(result)]
         } else {
-            blobContent = [JSON.stringify(this.props.annotations)]
+            blobContent = [JSON.stringify(addImageSize(this.props.annotations))]
         }
 
         // download just annotations for current image
