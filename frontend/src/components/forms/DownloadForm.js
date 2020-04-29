@@ -38,10 +38,11 @@ class DownloadForm extends React.Component {
     downloadAnnotations() {
         let blobContent
 
-        const addImageSize = annotationList => annotationList.map(annotation => {
-            annotation.imageSize = [this.props.image.width, this.props.image.height]
-            return annotation
-        })
+        const addImageSize = annotationList =>
+            annotationList.map(annotation => {
+                annotation.imageSize = [this.props.image.width, this.props.image.height]
+                return annotation
+            })
 
         if (this.props.image.numFrames != null) {
             // frame set

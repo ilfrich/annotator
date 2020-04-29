@@ -13,7 +13,6 @@ import {
 import ImageAnnotation from "../components/images/ImageAnnotation"
 import { getProjects } from "../redux/projects"
 import Breadcrumb from "../components/Breadcrumb"
-import util from "../util"
 import AnnotationTypeSelector from "../components/forms/AnnotationTypeSelector"
 
 const style = {

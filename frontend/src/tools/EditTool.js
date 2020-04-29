@@ -1,4 +1,5 @@
 import React from "react"
+import Alert from "react-s-alert"
 import common from "./common"
 import mixins from "../mixins"
 
@@ -6,6 +7,25 @@ const style = {
     errorMessage: {
         ...mixins.smallFont,
         color: "#a33",
+    },
+    controlOptionContainer: {
+        display: "grid",
+        gridTemplateColumns: "1fr 1fr",
+        border: "1px solid #ccc",
+        marginBottom: "5px",
+    },
+    controlOption: selected => ({
+        padding: "8px",
+        textAlign: "center",
+        background: selected ? mixins.mainColor.color : "#fff",
+        color: selected ? "#fff" : "#333",
+        cursor: selected ? "normal" : "pointer",
+    }),
+    label: {
+        textDecoration: "underline",
+        fontWeight: "600",
+        fontSize: "12px",
+        paddingBottom: "5px",
     },
 }
 
@@ -16,10 +36,29 @@ class EditToolOptionPanel extends React.Component {
             selected: false,
             isControlPointEdit: false,
             newPolygon: null,
+            settingMoveControlPoint: true, // true or false, false will create new control points
         }
 
         this.reset = this.reset.bind(this)
         this.save = this.save.bind(this)
+        this.changeMoveControlPoint = this.changeMoveControlPoint.bind(this)
+        this.emitWarning = this.emitWarning.bind(this)
+    }
+
+    changeMoveControlPoint(newValue) {
+        return () => {
+            if (this.state.settingMoveControlPoint === newValue) {
+                return
+            }
+
+            this.setState({
+                settingMoveControlPoint: newValue,
+            })
+        }
+    }
+
+    emitWarning(message) {
+        Alert.warning(message)
     }
 
     reset() {
@@ -27,6 +66,7 @@ class EditToolOptionPanel extends React.Component {
             selected: false,
             isControlPointEdit: false,
             newPolygon: null,
+            settingMoveControlPoint: true,
         })
     }
 
@@ -35,15 +75,45 @@ class EditToolOptionPanel extends React.Component {
     }
 
     render() {
+        const initControlPointEditMessage = this.state.settingMoveControlPoint
+            ? "Please select a control point and drag it to a new position"
+            : "Please click in between 2 control points to insert a new one"
+
         return (
             <div>
                 {this.state.selected === false ? (
                     <em style={mixins.smallFont}>Please select an annotation to edit</em>
                 ) : null}
+
+                {this.state.selected === true && this.state.isControlPointEdit === true ? (
+                    <div>
+                        <div style={style.label}>Control Points</div>
+                        <div style={style.controlOptionContainer}>
+                            <div
+                                style={{
+                                    ...style.controlOption(this.state.settingMoveControlPoint),
+                                    borderRight: "1px solid #ccc",
+                                }}
+                                onClick={this.changeMoveControlPoint(true)}
+                            >
+                                Move
+                            </div>
+                            <div
+                                style={style.controlOption(this.state.settingMoveControlPoint === false)}
+                                onClick={this.changeMoveControlPoint(false)}
+                            >
+                                Insert
+                            </div>
+                        </div>
+                    </div>
+                ) : null}
+
                 {this.state.selected === true &&
                 this.state.isControlPointEdit === true &&
                 this.state.newPolygon == null ? (
-                    <em style={mixins.smallFont}>Please select a control point and drag it to a new position</em>
+                    <div>
+                        <em style={mixins.smallFont}>{initControlPointEditMessage}</em>
+                    </div>
                 ) : null}
 
                 {this.state.selected === true && this.state.isControlPointEdit === false ? (
@@ -146,6 +216,44 @@ class EditTool extends common.CommonTool {
                     this.remove(polygon.shape)
                 }
             })
+        } else if (this.isPointEdit() && !this.isControlPointMove()) {
+            // insert mode for control points, find closest 2 points
+            const distances = []
+            this.selectedPolygon.shape.forEach((coordinates, index) => {
+                distances.push({
+                    index,
+                    distance: Math.sqrt((mousePos.x - coordinates[0]) ** 2 + (mousePos.y - coordinates[1]) ** 2),
+                })
+            })
+            const sortedDistances = distances.sort((a, b) => a.distance - b.distance)
+            const selected = [sortedDistances[0], sortedDistances[1]]
+            if (
+                Math.abs(selected[0].index - selected[1].index) !== 1 &&
+                selected[0].index !== 0 &&
+                selected[1].index !== 0
+            ) {
+                // oh, oh, clicked between 2 not sequential points
+                this.optionPanel.emitWarning("Please select in between 2 neighbouring control points")
+                return
+            }
+
+            let minIndex = Math.min(selected[0].index, selected[1].index)
+            const maxIndex = Math.max(selected[0].index, selected[1].index)
+            if (minIndex === 0 && maxIndex === sortedDistances.length - 1) {
+                // in between first and last
+                minIndex = maxIndex
+            }
+
+            // new list of coordinates
+            const result = [...this.selectedPolygon.shape]
+            // insert new control point
+            result.splice(minIndex + 1, 0, [mousePos.x, mousePos.y])
+
+            // inform the option panel about new data
+            this.selectedPolygon.shape = result
+            this.optionPanel.setState({
+                newPolygon: { ...this.selectedPolygon },
+            })
         }
 
         this.redraw()
@@ -154,7 +262,7 @@ class EditTool extends common.CommonTool {
     handleMouseDown(ev) {
         const mousePos = this.getMousePos(ev)
         if (this.selectedPolygon != null) {
-            if (this.isPointEdit()) {
+            if (this.isPointEdit() && this.isControlPointMove()) {
                 // for adjusting control points
                 this.controlPoint = this.getClosestPoint(mousePos)
             }
@@ -203,6 +311,13 @@ class EditTool extends common.CommonTool {
         }
         const pointEditTools = ["spline", "polygon"]
         return pointEditTools.indexOf(this.selectedPolygonTool) !== -1
+    }
+
+    isControlPointMove() {
+        if (this.isPointEdit() === false) {
+            return false
+        }
+        return this.optionPanel.state.settingMoveControlPoint
     }
 
     isControlPoint(coordinate) {
