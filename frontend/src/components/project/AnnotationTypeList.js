@@ -69,15 +69,19 @@ class AnnotationTypeList extends React.Component {
     }
 
     componentDidMount() {
-        this.initState(this.props.project)
+        this.initState(this.props.annotationTypes)
     }
 
-    initState(project) {
-        if (project != null) {
-            this.setState({
-                annotationTypes: project.annotationTypes || {},
-            })
+    componentDidUpdate(prevProps, prevState, snapshot) {
+        if (JSON.stringify(prevProps.annotationTypes) !== JSON.stringify(this.props.annotationTypes)) {
+            this.initState(this.props.annotationTypes)
         }
+    }
+
+    initState(annotationTypes) {
+        this.setState({
+            annotationTypes: annotationTypes || {},
+        })
     }
 
     addType() {
@@ -121,8 +125,7 @@ class AnnotationTypeList extends React.Component {
     }
 
     saveTypes() {
-        const { project } = this.props
-        this.props.dispatch(updateAnnotationTypes(project._id, this.state.annotationTypes))
+        this.props.dispatch(updateAnnotationTypes(this.props.projectId, this.state.annotationTypes))
         // removes the save button to avoid double clicking
         this.setState({
             hasChanged: false,

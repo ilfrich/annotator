@@ -67,3 +67,34 @@ class AnnotationStore(AbstractMongoStore):
 
     def get_by_project(self, project_id):
         return super().query({"projectId": project_id})
+
+    def get_by_annotation_type(self, project_id, annotation_type):
+        return super().query({
+            "projectId": project_id,
+            "shapes.annotationType": annotation_type,
+        })
+
+    def remove_annotation_type(self, project_id, annotation_type):
+        annotations = self.get_by_annotation_type(project_id, annotation_type)
+
+        # function to remove annotation type
+        def _remove_type(shape):
+            if "annotationType" in shape and shape["annotationType"] == annotation_type:
+                shape["annotationType"] = None
+            return shape
+
+        for annotation in annotations:
+            self.update_one(AbstractMongoStore.id_query(annotation.id),
+                            AbstractMongoStore.set_update("shapes",  list(map(_remove_type, annotation.shapes))))
+
+    def migrate_annotation_type(self, project_id, annotation_type, new_type):
+        annotations = self.get_by_annotation_type(project_id, annotation_type)
+
+        def _update_type(shape):
+            if "annotationType" in shape and shape["annotationType"] == annotation_type:
+                shape["annotationType"] = new_type
+            return shape
+
+        for annotation in annotations:
+            self.update_one(AbstractMongoStore.id_query(annotation.id),
+                            AbstractMongoStore.set_update("shapes", list(map(_update_type, annotation.shapes))))

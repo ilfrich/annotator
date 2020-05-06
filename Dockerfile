@@ -24,6 +24,10 @@ COPY .babelrc .
 COPY package.json .
 COPY webpack.config.js .
 
+# copy favicon
+RUN mkdir -p static
+COPY static/favicon.png ./static
+
 # install dependencies
 RUN pip install -r requirements.txt
 

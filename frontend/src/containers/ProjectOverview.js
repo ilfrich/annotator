@@ -9,6 +9,14 @@ import util from "../util"
 import Breadcrumb from "../components/Breadcrumb"
 import { getAnnotationForImage } from "../redux/annotations"
 import AnnotationTypeList from "../components/project/AnnotationTypeList"
+import ProjectSettingsImpex from "../components/project/ProjectSettingsImpex"
+
+const style = {
+    projectSettings: {
+        display: "grid",
+        gridTemplateColumns: "500px 500px",
+    },
+}
 
 @connect(stores => ({
     projectList: stores.projects.projectList,
@@ -69,7 +77,21 @@ class ProjectOverview extends React.Component {
                     annotations={this.props.annotationList}
                 />
                 <h5 style={mixins.heading}>Annotation Types</h5>
-                <AnnotationTypeList project={this.props.projectList[this.getProjectId()]} />
+                <div style={style.projectSettings}>
+                    <div>
+                        <AnnotationTypeList
+                            projectId={this.getProjectId()}
+                            annotationTypes={
+                                this.props.projectList[this.getProjectId()]
+                                    ? this.props.projectList[this.getProjectId()].annotationTypes
+                                    : {}
+                            }
+                        />
+                    </div>
+                    <div>
+                        <ProjectSettingsImpex project={this.props.projectList[this.getProjectId()]} />
+                    </div>
+                </div>
             </div>
         )
     }

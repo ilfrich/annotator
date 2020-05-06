@@ -6,6 +6,7 @@ const projectActions = {
     CREATE_PROJECT: "CREATE_PROJECT",
     DELETE_PROJECT: "DELETE_PROJECT",
     UPDATE_ANNOTATION_TYPES: "UPDATE_ANNOTATION_TYPES",
+    IMPORT_PROJECT_SETTINGS: "IMPORT_PROJECT_SETTINGS",
 }
 
 export const getProjects = () => ({
@@ -42,6 +43,18 @@ export const updateAnnotationTypes = (projectId, annotationTypes) => ({
     }).then(util.restHandler),
 })
 
+export const importProjectSettings = (projectId, newSettings, importMapping) => ({
+    type: projectActions.IMPORT_PROJECT_SETTINGS,
+    payload: fetch(`/api/projects/${projectId}/settings`, {
+        method: "POST",
+        headers: util.getJsonHeader(),
+        body: JSON.stringify({
+            settings: newSettings,
+            importMapping,
+        }),
+    }).then(util.restHandler),
+})
+
 const initialState = {
     projectList: {},
 }
@@ -69,6 +82,15 @@ export const ProjectReducer = (state = initialState, action) => {
             const projectList = { ...state.projectList }
             projectList[action.payload._id] = action.payload
             Alert.success("Project created")
+            return {
+                ...state,
+                projectList,
+            }
+        }
+        case `${projectActions.IMPORT_PROJECT_SETTINGS}${util.actionTypeSuffixes.fulfilled}`: {
+            const projectList = { ...state.projectList }
+            projectList[action.payload._id] = action.payload
+            Alert.success("Project settings imported. Reloading page.")
             return {
                 ...state,
                 projectList,

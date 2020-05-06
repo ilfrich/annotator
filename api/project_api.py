@@ -52,3 +52,38 @@ def register_endpoints(app, stores):
         body = request.get_json()
         project_store.update_annotation_types(project_id, body["annotationTypes"])
         return jsonify(project_store.get(project_id).to_json())
+
+    @app.route("/api/projects/<project_id>/settings", methods=["POST"])
+    def import_project_settings(project_id):
+        existing = project_store.get(project_id)
+        if existing is None:
+            abort(404)
+        body = request.get_json()
+        settings = body["settings"]
+        import_mapping = body["importMapping"]["annotationTypes"]
+        final_annotation_types = existing.annotation_types
+
+        # handle existing annotations
+        for annotation_type in import_mapping:
+            if import_mapping[annotation_type] != 1:
+                # will be migrated or just removed
+                del final_annotation_types[annotation_type]
+
+            # handle migration of annotation types
+            if import_mapping[annotation_type] == -1:
+                # remove
+                annotation_store.remove_annotation_type(project_id, annotation_type)
+            elif import_mapping[annotation_type] == 1:
+                # keep this
+                pass
+            else:
+                # migrate annotations
+                annotation_store.migrate_annotation_type(project_id, annotation_type, import_mapping[annotation_type])
+
+        # add all the new annotation types
+        for annotation_type in settings["annotationTypes"]:
+            final_annotation_types[annotation_type] = settings["annotationTypes"][annotation_type]
+
+        # update project
+        project_store.update_annotation_types(project_id, final_annotation_types)
+        return jsonify(project_store.get(project_id).to_json())

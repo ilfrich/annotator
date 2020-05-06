@@ -24,6 +24,7 @@ import {
     faExpand,
     faMinus,
     faCut,
+    faFileExport,
 } from "@fortawesome/free-solid-svg-icons"
 import { render } from "react-dom"
 import { createStore, applyMiddleware, compose } from "redux"
@@ -57,6 +58,7 @@ const icons = [
     faExpand,
     faMinus,
     faCut,
+    faFileExport,
 ]
 icons.forEach(icon => {
     library.add(icon)
