@@ -7,6 +7,7 @@ General purpose tool to create image annotations for machine learning purposes.
 Annotations can be downloaded as JSON file and used in machine learning tools to train image analytic models.
 
 [![Demo Video](http://img.youtube.com/vi/L9HzpUxJNc0/0.jpg)](https://www.youtube.com/watch?v=L9HzpUxJNc0 "Demo Video")
+_click to view demo video_
 
 **Table of Contents**
 
