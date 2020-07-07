@@ -309,7 +309,7 @@ class EditTool extends common.CommonTool {
         if (this.selectedPolygonTool == null) {
             return false
         }
-        const pointEditTools = ["spline", "polygon"]
+        const pointEditTools = ["spline", "polygon", "line"]
         return pointEditTools.indexOf(this.selectedPolygonTool) !== -1
     }
 
@@ -349,7 +349,9 @@ class EditTool extends common.CommonTool {
                     this.ctx.lineTo(finalPoint[0] * this.zoom, finalPoint[1] * this.zoom)
                 }
             })
-            this.ctx.closePath()
+            if (this.selectedPolygon.tool !== "line") {
+                this.ctx.closePath()
+            }
             this.ctx.stroke()
 
             // decide whether to display corner hooks

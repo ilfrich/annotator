@@ -13,6 +13,7 @@ import FrameControl from "./FrameControl"
 import FramePlayer from "./FramePlayer"
 import SettingsPopup from "../forms/SettingsPopup"
 import EditTool from "../../tools/EditTool"
+import LineTool from "../../tools/LineTool"
 
 const style = {
     slider: {
@@ -143,6 +144,12 @@ const TOOLS = {
         label: "Spline Polygon",
         icon: "splotch",
         ToolClass: SplineTool,
+    },
+    line: {
+        id: "line",
+        label: "Line Tool",
+        icon: "slash",
+        ToolClass: LineTool,
     },
     eraser: {
         id: "eraser",
@@ -406,6 +413,7 @@ class ImageAnnotation extends React.Component {
         // clean canvas
         this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height)
         this.ctx.lineWidth = 3
+        this.ctx.setLineDash([1, 0])
 
         if (this.state.showAnnotations === false) {
             return
@@ -436,9 +444,12 @@ class ImageAnnotation extends React.Component {
                 }
             })
 
-            this.ctx.closePath()
+            if (polygon.tool !== TOOLS.line.id) {
+                // only close other than lin
+                this.ctx.closePath()
+            }
 
-            if (this.state.settings.ANTR_OUTLINE_ONLY) {
+            if (this.state.settings.ANTR_OUTLINE_ONLY || polygon.tool === TOOLS.line.id) {
                 this.ctx.strokeStyle = this.ctx.fillStyle
                 this.ctx.stroke()
             } else {
