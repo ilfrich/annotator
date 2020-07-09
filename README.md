@@ -84,14 +84,15 @@ pip install -r requirements.txt
 
 You can run the whole solution as docker environment.
 
-**Build**
-
-- Run `docker build -t ilfrich/annotator .` (ensure the build finishes successful)
-
 **Start**
 
-- Run `docker-compose up` - this will download the MongoDB image, if you don't already have it, and run MongoDB + the 
- just built container containing the annotator app.
+- Run `docker-compose up` - this will download the MongoDB image and Annotator image, if you don't already have it, and
+ run MongoDB + the Annotator container containing the annotator app.
+
+**Build**
+
+- If you want to build the container yourself, run `docker build -t ilfrich/annotator .` (ensure the build finishes
+ successful)
 
 ## Running the App
 
