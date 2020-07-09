@@ -228,6 +228,9 @@ Simply execute `python migrate_data.py`
 The script will lead the user through a dialog to provide the source URL (URL where you want to copy projects from) and
  target URL (URL of the system where you want to copy/clone the project(s) to).
 
+If you run this locally and want to copy the data to a server (let's call the server foobar.com), you would provide the
+ source URL: `http://localhost:5555` and target URL: `http://foobar.com:5555`.
+
 Then it will scan for existing projects in the source system and print out a list of all projects. You can select which
  projects you want to replicate or provide "0", if you want all projects to be migrated. For multiple projects, but not
  all, you can simply provide the numbers in front of the project name separated by space (e.g. `1 2 5` to migrate
@@ -235,3 +238,9 @@ Then it will scan for existing projects in the source system and print out a lis
 
 Once the migration has started, you simply have to wait. It will print out debug information about the progress. Note
  that migration of larger projects can take a while (several minutes).
+
+If you see a Python error during migration, there is not much assistance / information returned about what the problem
+ is. You usually would see just Python errors. Check connectivity to all systems and potentially debug the script itself
+ to find out what's wrong. Potential issues are: connectivity issues to source or target system, file system access
+ issues (in the _migration folder) - check that you don't have an explorer window open showing the migration folder or
+ a shell/bash open looking at that folder.
