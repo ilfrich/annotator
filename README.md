@@ -15,8 +15,9 @@ _click to view demo video_
 2. [Installation](#installation)
 3. [Docker Service](#docker-service)
 4. [Running the App](#running-the-app)
-6. [Environment Config](#environment-config)
-5. [Tech Stack](#tech-stack)
+5. [Environment Config](#environment-config)
+6. [Tech Stack](#tech-stack)
+7. [Migration / Copy](#migration-copy)
 
 **Quick Start**
 
@@ -216,3 +217,21 @@ component hierarchies
 - **Moment.JS** the standard library for date/time handling in JavaScript
 - **S Alert** a basic notification library 
 - **ESLint** and **Prettier** for linting Javascript code and auto-format
+
+## Migration / Copy
+
+If you want to copy a project (or multiple) from one annotator system to another, you can use the `migrate_data.py`
+script.
+
+Simply execute `python migrate_data.py`
+
+The script will lead the user through a dialog to provide the source URL (URL where you want to copy projects from) and
+ target URL (URL of the system where you want to copy/clone the project(s) to).
+
+Then it will scan for existing projects in the source system and print out a list of all projects. You can select which
+ projects you want to replicate or provide "0", if you want all projects to be migrated. For multiple projects, but not
+ all, you can simply provide the numbers in front of the project name separated by space (e.g. `1 2 5` to migrate
+ project 1, 2 and 5 - corresponding to the numbers in the list).
+
+Once the migration has started, you simply have to wait. It will print out debug information about the progress. Note
+ that migration of larger projects can take a while (several minutes).

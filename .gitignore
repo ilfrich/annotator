@@ -8,6 +8,7 @@ travis/pip.conf
 _images/
 _data/
 package-lock.json
+_migration/
 
 # Byte-compiled / optimized / DLL files
 __pycache__/

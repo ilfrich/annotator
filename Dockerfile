@@ -10,29 +10,31 @@ RUN curl -L https://npmjs.org/install.sh | sh
 # declare app directory
 WORKDIR /app
 
+# copy favicon
+RUN mkdir -p static
+COPY static/favicon.png ./static
+
+# install dependencies
+COPY requirements.txt .
+RUN pip install -r requirements.txt
+
+COPY package.json .
+RUN npm i
+
+# copy javascript code
+COPY frontend ./frontend
+COPY .babelrc .
+COPY webpack.config.js .
+
+# install NPM deps and build the frontend
+RUN npm run build
+
 # copy python code
 COPY api ./api
 COPY data ./data
 COPY storage ./storage
 COPY config.py .
 COPY runner.py .
-COPY requirements.txt .
-
-# copy javascript code
-COPY frontend ./frontend
-COPY .babelrc .
-COPY package.json .
-COPY webpack.config.js .
-
-# copy favicon
-RUN mkdir -p static
-COPY static/favicon.png ./static
-
-# install dependencies
-RUN pip install -r requirements.txt
-
-# install NPM deps and build the frontend
-RUN npm i && npm run build
 
 # start server
 ENTRYPOINT ["python3"]
