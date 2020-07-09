@@ -17,7 +17,7 @@ _click to view demo video_
 4. [Running the App](#running-the-app)
 5. [Environment Config](#environment-config)
 6. [Tech Stack](#tech-stack)
-7. [Migration / Copy](#migration-copy)
+7. [Migration / Copy](#migration--copy)
 
 **Quick Start**
 
