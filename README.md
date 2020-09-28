@@ -97,7 +97,7 @@ You can run the whole solution as docker environment.
 ## Running the App
 
 Regardless of whether you run the app as [docker service](#docker-service) or standalone (see below), the app will be
-available at http://localhost:5555
+ available at http://localhost:5555
 
 ### Frontend
 
@@ -108,7 +108,7 @@ npm run build
 ```
 
 This will produce an index.js containing all the frontend code in the `/static` directory and put the index.html in the 
-`/templates` folder. Those 2 directories are used by the Flask app to deliver the frontend components.
+ `/templates` folder. Those 2 directories are used by the Flask app to deliver the frontend components.
 
 ### Database
 
@@ -199,7 +199,7 @@ Check the `config.py` for all currently supported environment variables.
 project). Default: `_images`
 
 Developers: You can easily extend this and add getters for additional environment configuration and add those to your 
-`.env` file. Please provide meaningful defaults for all additional config variables (_except 3rd party service 
+ `.env` file. Please provide meaningful defaults for all additional config variables (_except 3rd party service
  credentials_)
 
 ## Tech Stack

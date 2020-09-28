@@ -16,6 +16,11 @@ const style = {
         display: "grid",
         gridTemplateColumns: "500px 500px",
     },
+    fileNameToggle: {
+        position: "absolute",
+        right: "15px",
+        top: "-10px",
+    },
 }
 
 @connect(stores => ({
@@ -26,8 +31,14 @@ const style = {
 class ProjectOverview extends React.Component {
     constructor(props) {
         super(props)
+
+        this.state = {
+            showFileNames: false,
+        }
+
         this.getProjectId = this.getProjectId.bind(this)
         this.getProjectImages = this.getProjectImages.bind(this)
+        this.toggleShowFileNames = this.toggleShowFileNames.bind(this)
     }
 
     componentDidMount() {
@@ -60,6 +71,13 @@ class ProjectOverview extends React.Component {
         return util.idMapToList(this.props.imageList[projectId])
     }
 
+    toggleShowFileNames() {
+        this.setState(oldState => ({
+            ...oldState,
+            showFileNames: !oldState.showFileNames,
+        }))
+    }
+
     render() {
         if (this.getProjectId() == null || this.props.projectList[this.getProjectId()] == null) {
             return null
@@ -70,11 +88,28 @@ class ProjectOverview extends React.Component {
                 <Breadcrumb project={this.props.projectList[this.getProjectId()]} />
                 <h5 style={mixins.heading}>Upload Image</h5>
                 <ImageUploadForm projectId={this.getProjectId()} />
-                <h5 style={mixins.heading}>Images</h5>
+                <h5 style={mixins.heading}>
+                    <div style={mixins.relative}>
+                        Images
+                        <div style={style.fileNameToggle}>
+                            <input
+                                type="checkbox"
+                                id="show-file-names"
+                                defaultChecked={this.state.showFileNames}
+                                onChange={this.toggleShowFileNames}
+                                style={mixins.checkbox}
+                            />
+                            <label style={mixins.label} htmlFor="show-file-names">
+                                Show File Names
+                            </label>
+                        </div>
+                    </div>
+                </h5>
                 <ImageList
                     project={this.props.projectList[this.getProjectId()]}
                     images={this.getProjectImages()}
                     annotations={this.props.annotationList}
+                    showFilenames={this.state.showFileNames}
                 />
                 <h5 style={mixins.heading}>Annotation Types</h5>
                 <div style={style.projectSettings}>

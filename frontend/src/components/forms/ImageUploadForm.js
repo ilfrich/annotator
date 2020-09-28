@@ -56,8 +56,8 @@ class ImageUploadForm extends React.Component {
             formData.append("label", this.state.currentFileName)
             this.props.dispatch(uploadImage(this.props.projectId, formData))
         } else {
-            console.log(file.type)
-            Alert.warning("Can only upload images or archives.")
+            console.error(`'${file.type}' is not a valid file type`)
+            Alert.warning("Can only upload images or zip archives.")
         }
         // reset form
         this.uploadFile.value = ""

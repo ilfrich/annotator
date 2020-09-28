@@ -139,8 +139,17 @@ class ImageList extends React.Component {
                                     : "-"}
                             </div>
                             {imageMeta.label != null && imageMeta.label.trim() !== "" ? (
-                                <div style={style.imageLabel} title={imageMeta.label}>
-                                    {imageMeta.label}
+                                <div
+                                    style={style.imageLabel}
+                                    title={
+                                        this.props.showFilenames && imageMeta.numFrames == null
+                                            ? `${imageMeta.originalFileNames} (${imageMeta.label})`
+                                            : imageMeta.label
+                                    }
+                                >
+                                    {this.props.showFilenames && imageMeta.numFrames == null
+                                        ? imageMeta.originalFileNames
+                                        : imageMeta.label}
                                 </div>
                             ) : null}
                             <div style={style.deleteLayer} onClick={this.toggleDelete(imageMeta._id)}>

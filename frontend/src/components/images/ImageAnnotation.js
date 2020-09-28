@@ -340,6 +340,7 @@ class ImageAnnotation extends React.Component {
             currentFrame: newFrame,
             changed: false,
         })
+        this.props.setFrame(newFrame)
         setTimeout(() => {
             this.init()
         }, 100)

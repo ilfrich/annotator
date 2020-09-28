@@ -1,7 +1,7 @@
 import React from "react"
 import { connect } from "react-redux"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
-import { mixins, Popup } from "quick-n-dirty-react"
+import { mixins, Popup, NotificationBar } from "quick-n-dirty-react"
 import { getImage, selectImage, updateImageLabel } from "../redux/images"
 import {
     createAnnotation,
@@ -24,6 +24,15 @@ const style = {
         fontSize: "14px",
         fontFamily: '"Courier New", Courier, monospace',
     },
+    imageFileName: {
+        ...mixins.trimOverflow,
+        ...mixins.indent(10),
+        maxWidth: "calc(100vw - 400px)",
+        fontSize: "14px",
+        fontFamily: "Courier",
+        color: "#666",
+    },
+    copyIcon: {},
 }
 
 @connect(store => ({
@@ -39,6 +48,7 @@ class ImageView extends React.Component {
         this.state = {
             currentAnnotationType: null,
             editLabel: false,
+            currentFrame: null,
         }
 
         this.getImageId = this.getImageId.bind(this)
@@ -47,6 +57,8 @@ class ImageView extends React.Component {
         this.changeCurrentAnnotationType = this.changeCurrentAnnotationType.bind(this)
         this.updateEditLabel = this.updateEditLabel.bind(this)
         this.toggleEditLabel = this.toggleEditLabel.bind(this)
+        this.setFrame = this.setFrame.bind(this)
+        this.copyLabel = this.copyLabel.bind(this)
     }
 
     componentDidMount() {
@@ -67,12 +79,28 @@ class ImageView extends React.Component {
         this.props.dispatch(getAnnotationForImage(this.getProjectId(), this.getImageId()))
     }
 
+    componentDidUpdate(prevProps, prevState, snapshot) {
+        if (
+            this.state.currentFrame == null &&
+            this.props.currentImage != null &&
+            this.props.currentImage.numFrames != null
+        ) {
+            this.setFrame(0)
+        }
+    }
+
     getImageId() {
         return this.props.match.params.imageId
     }
 
     getProjectId() {
         return this.props.match.params.projectId
+    }
+
+    setFrame(newFrame) {
+        this.setState({
+            currentFrame: newFrame,
+        })
     }
 
     changeCurrentAnnotationType(selectedType) {
@@ -139,13 +167,37 @@ class ImageView extends React.Component {
         })
     }
 
+    copyLabel(label) {
+        return () => {
+            // copy string
+            const el = document.createElement("textarea")
+            el.value = label
+            document.body.appendChild(el)
+            el.select()
+            document.execCommand("copy")
+            document.body.removeChild(el)
+            this.alert.info("Copied to clipboard")
+        }
+    }
+
     render() {
         if (this.props.currentImage == null || this.props.projects[this.getProjectId()] == null) {
             return null
         }
 
+        const title =
+            this.props.currentImage.numFrames == null
+                ? this.props.currentImage.originalFileNames
+                : this.props.currentImage.originalFileNames[this.state.currentFrame]
+
         return (
             <div>
+                <NotificationBar
+                    ref={el => {
+                        this.alert = el
+                    }}
+                    position="left"
+                />
                 <Breadcrumb project={this.props.projects[this.getProjectId()]}>
                     <span>
                         {this.props.currentImage.label}
@@ -161,6 +213,7 @@ class ImageView extends React.Component {
                             title="Update Label"
                         />
                     </span>
+
                     {this.state.editLabel ? (
                         <Popup cancel={this.toggleEditLabel} ok={this.updateEditLabel} title="Update Label">
                             <label style={mixins.label} htmlFor="new-label">
@@ -177,6 +230,20 @@ class ImageView extends React.Component {
                         </Popup>
                     ) : null}
                 </Breadcrumb>
+
+                {this.state.currentFrame != null || this.props.currentImage.numFrames == null ? (
+                    <div style={style.imageFileName}>
+                        <FontAwesomeIcon
+                            title="Copy File Name"
+                            icon="copy"
+                            style={{ ...mixins.clickable, ...mixins.indent(10) }}
+                            onClick={this.copyLabel(title)}
+                        />
+                        <span style={mixins.indent(10)} title={title}>
+                            {title}
+                        </span>
+                    </div>
+                ) : null}
                 <AnnotationTypeSelector
                     project={this.props.projects[this.getProjectId()]}
                     changeType={this.changeCurrentAnnotationType}
@@ -188,6 +255,7 @@ class ImageView extends React.Component {
                     annotation={this.props.annotations[this.props.currentImage._id]}
                     update={this.saveAnnotation}
                     annotationType={this.state.currentAnnotationType}
+                    setFrame={this.setFrame}
                 />
             </div>
         )
