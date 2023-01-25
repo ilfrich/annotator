@@ -1,4 +1,4 @@
-from pbu import AbstractMongoStore
+from pbumongo import AbstractMongoStore
 
 
 class Image:
